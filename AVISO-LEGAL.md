@@ -48,10 +48,11 @@ solicitarlo **por escrito** a los autores, indicando el propósito, la població
 y la institución responsable. El acceso técnico al archivo no constituye
 autorización de uso.
 
-### Contacto
+### Cómo solicitar autorización
 
-Jorge Leonardo Restrepo Meneses
-jleonardorestrepo@gmail.com
+Las solicitudes se dirigen a los autores abriendo un *issue* en el repositorio
+de este proyecto en GitHub, indicando propósito, población e institución
+responsable.
 
 ---
 
@@ -77,9 +78,8 @@ applicable international instruments and have not been transferred to any third
 party. Technical access to a file does not constitute permission to use it.
 
 Researchers wishing to use these stimuli must request written permission from
-the authors, stating purpose, population and responsible institution.
-
-Contact: Jorge Leonardo Restrepo Meneses, jleonardorestrepo@gmail.com
+the authors by opening an issue in this project's GitHub repository, stating
+purpose, population and responsible institution.
 
 ---
 
