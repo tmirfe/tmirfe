@@ -585,3 +585,28 @@ form select:focus, form input:focus {
   line-height: 1.45;
   color: var(--borde);
 }
+
+/* Creditos de la portada. Van arriba, antes de la explicacion de la prueba,
+   porque son parte de la identidad del instrumento y no una nota al pie. */
+.autores {
+  margin: 0 0 22px;
+  padding: 14px 16px;
+  background: var(--papel-alt);
+  border-left: 4px solid var(--verde);
+  border-radius: 0 8px 8px 0;
+}
+.autores-rotulo {
+  margin: 0;
+  font-size: 11.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  color: var(--tinta-suave);
+}
+.autores-nombres {
+  margin: 2px 0 10px;
+  font-size: 15.5px;
+  line-height: 1.4;
+  font-weight: 600;
+  color: var(--tinta);
+}
+.autores-nombres:last-child { margin-bottom: 0; }
