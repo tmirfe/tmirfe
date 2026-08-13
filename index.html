@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+<title>T-Mirfe 2.0</title>
+<link rel="stylesheet" href="css/estilo.css">
+</head>
+<body>
+
+<!-- ============ 1. PORTADA ============ -->
+<section id="pantalla-portada" class="pantalla envoltorio activa">
+  <div class="caja">
+    <img class="logo-udea" src="marca/udea.png"
+         alt="Universidad de Antioquia" draggable="false">
+
+    <div class="marca">
+      <div class="marca-texto">
+        <h1>T-Mirfe</h1>
+        <p class="subtitulo">Test de Medici&oacute;n del &Iacute;ndice de Reconocimiento Facial de la Emoci&oacute;n</p>
+      </div>
+    </div>
+
+    <p class="entrada">Esta prueba mide la capacidad de reconocer emociones b&aacute;sicas en la expresi&oacute;n del rostro.
+    Dura entre cuatro y cinco minutos y se responde tocando la emoci&oacute;n que usted vea en cada fotograf&iacute;a.</p>
+
+    <p class="aviso-orientacion">Le recomendamos hacerla en un lugar tranquilo, sin interrupciones.</p>
+
+    <button class="boton-primario" data-ir="pantalla-consentimiento">Comenzar</button>
+
+    <p class="pie-institucional">
+      Programa de Psicolog&iacute;a &middot; Facultad de Ciencias Sociales y Humanas<br>
+      Universidad de Antioquia
+    </p>
+  </div>
+</section>
+
+<!-- ============ 2. CONSENTIMIENTO ============ -->
+<section id="pantalla-consentimiento" class="pantalla envoltorio">
+  <div class="caja">
+    <h2>Consentimiento informado</h2>
+
+    <div class="texto-legal">
+      <p>Usted est&aacute; invitado a participar de manera voluntaria en un estudio sobre el reconocimiento
+      de las expresiones faciales de las emociones b&aacute;sicas.</p>
+
+      <p><strong>En qu&eacute; consiste.</strong> Ver&aacute; veinticuatro fotograf&iacute;as de un rostro, una despu&eacute;s de otra.
+      En cada una debe indicar qu&eacute; emoci&oacute;n cree que expresa. La prueba dura entre cuatro y cinco minutos.</p>
+
+      <p><strong>Qu&eacute; datos se recogen.</strong> Sus respuestas, el tiempo que tarda en responder cada fotograf&iacute;a
+      y unos pocos datos generales (sexo, edad, ciudad, nivel educativo, ocupaci&oacute;n). <strong>No se solicita
+      su nombre ni ning&uacute;n dato que permita identificarle.</strong> La informaci&oacute;n se analiza de forma agrupada
+      y se usa &uacute;nicamente con fines acad&eacute;micos.</p>
+
+      <p><strong>Riesgos y beneficios.</strong> La participaci&oacute;n no implica riesgo alguno. De acuerdo con el
+      art&iacute;culo 11 de la Resoluci&oacute;n 8430 de 1993 del Ministerio de Salud, se clasifica como investigaci&oacute;n
+      sin riesgo. Al terminar recibir&aacute; su resultado personal.</p>
+
+      <p><strong>Voluntariedad.</strong> Puede abandonar la prueba en cualquier momento cerrando esta p&aacute;gina,
+      sin consecuencia alguna. Si no la termina, sus datos no se registran.</p>
+    </div>
+
+    <label class="casilla">
+      <input type="checkbox" id="acepta-consentimiento">
+      <span>He le&iacute;do lo anterior, soy mayor de 15 a&ntilde;os y acepto participar voluntariamente.</span>
+    </label>
+
+    <div class="fila-botones">
+      <button class="boton-secundario" data-ir="pantalla-portada">Volver</button>
+      <button class="boton-primario" id="btn-acepta" disabled data-ir="pantalla-datos">Acepto y contin&uacute;o</button>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 3. DATOS ============ -->
+<section id="pantalla-datos" class="pantalla envoltorio">
+  <div class="caja">
+    <h2>Antes de empezar</h2>
+    <p class="entrada">Ninguno de estos datos permite identificarle.</p>
+
+    <form id="form-datos" novalidate>
+      <label>Sexo
+        <select name="sexo" required>
+          <option value="">Seleccione</option>
+          <option value="masculino">Masculino</option>
+          <option value="femenino">Femenino</option>
+        </select>
+      </label>
+
+      <label>A&ntilde;o de nacimiento
+        <select name="anio_nacimiento" required id="sel-anio"><option value="">Seleccione</option></select>
+      </label>
+
+      <label>Ciudad o municipio donde vive
+        <select name="ciudad_residencia" required id="sel-ciudad">
+          <option value="">Seleccione</option>
+          <option value="MEDELLIN">Medell&iacute;n</option>
+          <option value="BELLO">Bello</option>
+          <option value="ITAGUI">Itag&uuml;&iacute;</option>
+          <option value="ENVIGADO">Envigado</option>
+          <option value="SABANETA">Sabaneta</option>
+          <option value="LA ESTRELLA">La Estrella</option>
+          <option value="CALDAS">Caldas</option>
+          <option value="COPACABANA">Copacabana</option>
+          <option value="GIRARDOTA">Girardota</option>
+          <option value="BARBOSA">Barbosa</option>
+          <option value="OTRA">Otra</option>
+        </select>
+      </label>
+
+      <label id="campo-otra-ciudad" hidden>&iquest;Cu&aacute;l?
+        <input type="text" name="ciudad_otra" autocomplete="off" maxlength="60"
+               placeholder="Escriba su ciudad o municipio">
+      </label>
+
+      <label>Se cri&oacute; principalmente en zona
+        <select name="crianza" required>
+          <option value="">Seleccione</option>
+          <option value="urbana">Urbana</option>
+          <option value="rural">Rural</option>
+        </select>
+      </label>
+
+      <label>Estado civil
+        <select name="estado_civil" required>
+          <option value="">Seleccione</option>
+          <option value="soltero">Soltero(a)</option>
+          <option value="casado">Casado(a)</option>
+          <option value="union_libre">Uni&oacute;n libre</option>
+          <option value="separado">Separado(a)</option>
+          <option value="viudo">Viudo(a)</option>
+        </select>
+      </label>
+
+      <label>Nivel educativo alcanzado
+        <select name="nivel_educativo" required>
+          <option value="">Seleccione</option>
+          <option value="primaria">Primaria</option>
+          <option value="bachillerato">Bachillerato</option>
+          <option value="tecnico">T&eacute;cnico</option>
+          <option value="tecnologico">Tecnol&oacute;gico</option>
+          <option value="profesional">Profesional</option>
+          <option value="especializacion">Especializaci&oacute;n</option>
+          <option value="maestria">Maestr&iacute;a</option>
+          <option value="doctorado">Doctorado</option>
+        </select>
+      </label>
+
+      <label>Ocupaci&oacute;n
+        <select name="ocupacion" required>
+          <option value="">Seleccione</option>
+          <option value="estudiante">Estudiante</option>
+          <option value="empleado">Empleado(a)</option>
+          <option value="independiente">Trabajador(a) independiente</option>
+          <option value="empresario">Empresario(a)</option>
+          <option value="desempleado">Desempleado(a)</option>
+          <option value="jubilado">Jubilado(a)</option>
+          <option value="hogar">Dedicado(a) al hogar</option>
+        </select>
+      </label>
+
+      <p class="error-form" id="error-datos" hidden></p>
+
+      <div class="fila-botones">
+        <button type="button" class="boton-secundario" data-ir="pantalla-consentimiento">Volver</button>
+        <button type="submit" class="boton-primario">Continuar</button>
+      </div>
+    </form>
+  </div>
+</section>
+
+<!-- ============ 4. INSTRUCCIONES ============ -->
+<section id="pantalla-instrucciones" class="pantalla envoltorio">
+  <div class="caja">
+    <h2>C&oacute;mo se responde</h2>
+
+    <ol class="instrucciones">
+      <li>Ver&aacute; una fotograf&iacute;a de un rostro.</li>
+      <li>Debajo aparecen las seis emociones. Toque la que usted crea que el rostro expresa.</li>
+      <li>Cada fotograf&iacute;a permanece <strong id="txt-exposicion">6 segundos</strong>. Si no responde en ese tiempo,
+          la prueba avanza sola y ese punto se pierde.</li>
+      <li>Entre una fotograf&iacute;a y otra ver&aacute; una pantalla gris con una cruz en el centro. Mire la cruz.</li>
+    </ol>
+
+    <p class="destacado">Responda <strong>lo m&aacute;s r&aacute;pido que pueda, sin equivocarse</strong>.
+    Interesa tanto su acierto como el tiempo que tarda.</p>
+
+    <p class="entrada">Vamos paso a paso y luego practica con tres ejemplos.</p>
+
+    <div class="fila-botones">
+      <button class="boton-secundario" data-ir="pantalla-datos">Volver</button>
+      <button class="boton-primario" data-ir="pantalla-tutorial">Ver c&oacute;mo es</button>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 4b. TUTORIAL GUIADO ============ -->
+<section id="pantalla-tutorial" class="pantalla envoltorio">
+  <div class="caja">
+    <div class="pasos" id="pasos-puntos"></div>
+
+    <!-- Paso 1: el estimulo -->
+    <div class="paso activo" data-paso="1">
+      <h2>1. Aparece un rostro</h2>
+      <p class="entrada">Sobre un fondo gris, siempre en el mismo lugar y del mismo tama&ntilde;o.</p>
+      <div class="demo-marco">
+        <img class="demo-img" src="fotos/p1.jpg" alt="Ejemplo de fotograf&iacute;a" draggable="false">
+      </div>
+      <p class="nota">Esta fotograf&iacute;a es solo del tutorial. No aparece en la prueba.</p>
+    </div>
+
+    <!-- Paso 2: la respuesta -->
+    <div class="paso" data-paso="2">
+      <h2>2. Toque la emoci&oacute;n</h2>
+      <p class="entrada">Debajo de la fotograf&iacute;a est&aacute;n siempre las mismas seis emociones,
+      siempre en el mismo orden. Toque cualquiera para probar.</p>
+      <div class="demo-marco compacto">
+        <div class="rejilla-respuestas demo-rejilla" id="demo-rejilla"></div>
+      </div>
+      <p class="nota" id="nota-paso2">El bot&oacute;n se ilumina para confirmar que su respuesta qued&oacute; registrada.</p>
+    </div>
+
+    <!-- Paso 3: el tiempo -->
+    <div class="paso" data-paso="3">
+      <h2>3. Tiene <span class="txt-exposicion">6 segundos</span></h2>
+      <p class="entrada">Ese es el tiempo que la fotograf&iacute;a permanece en pantalla. Si responde antes,
+      se pasa de inmediato a la siguiente. Si se le acaba el tiempo, la prueba avanza sola y ese punto se pierde.</p>
+      <p class="destacado">Responda <strong>lo m&aacute;s r&aacute;pido que pueda, sin equivocarse</strong>.
+      Se mide tanto lo que acierta como lo que tarda, y las dos cosas importan igual.</p>
+      <p class="nota">No hay reloj en pantalla a prop&oacute;sito, para que la cuenta atr&aacute;s no le ponga nervioso.</p>
+    </div>
+
+    <!-- Paso 4: la mascara -->
+    <div class="paso" data-paso="4">
+      <h2>4. Entre una y otra, una cruz</h2>
+      <p class="entrada">Despu&eacute;s de cada respuesta ver&aacute; dos segundos de pantalla gris con una cruz en el centro.
+      Mire la cruz. Sirve para que una fotograf&iacute;a no contamine a la siguiente.</p>
+      <div class="demo-marco">
+        <div class="demo-mascara"><span class="cruz">+</span></div>
+      </div>
+    </div>
+
+    <!-- Paso 5: a practicar -->
+    <div class="paso" data-paso="5">
+      <h2>5. Practique</h2>
+      <p class="entrada">Ahora tres ejemplos con el tiempo real, para que coja el ritmo.
+      Ninguna de estas tres fotograf&iacute;as aparece en la prueba.</p>
+      <p class="nota">No le diremos si acert&oacute;. La pr&aacute;ctica es para el mecanismo,
+      no para aprenderse las respuestas.</p>
+      <button class="boton-primario grande" id="btn-practica">Empezar la pr&aacute;ctica</button>
+    </div>
+
+    <div class="fila-botones" id="nav-tutorial">
+      <button class="boton-secundario" id="btn-paso-atras">Atr&aacute;s</button>
+      <button class="boton-primario" id="btn-paso-adelante">Siguiente</button>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 5. CARGA ============ -->
+<section id="pantalla-carga" class="pantalla envoltorio">
+  <div class="caja centrado">
+    <h2>Preparando la prueba</h2>
+    <div class="barra"><div class="barra-relleno" id="barra-carga"></div></div>
+    <p class="entrada" id="txt-carga">Cargando im&aacute;genes...</p>
+    <p class="nota">Se cargan todas las fotograf&iacute;as antes de empezar para que ninguna demora
+    de conexi&oacute;n afecte la medici&oacute;n del tiempo.</p>
+  </div>
+</section>
+
+<!-- ============ 6. LISTO ============ -->
+<section id="pantalla-listo" class="pantalla envoltorio">
+  <div class="caja centrado">
+    <h2 id="titulo-listo">Todo listo</h2>
+    <p class="entrada" id="txt-listo">La prueba tiene 24 fotograf&iacute;as y dura unos cuatro minutos.
+    Cuando toque el bot&oacute;n empieza de inmediato.</p>
+    <button class="boton-primario grande" id="btn-empezar">Empezar</button>
+  </div>
+</section>
+
+<!-- ============ 7. ENSAYO (sin marca, fondo neutro) ============ -->
+<section id="pantalla-ensayo" class="pantalla ensayo">
+  <div class="ensayo-marco">
+    <div class="zona-estimulo">
+      <img id="img-estimulo" alt="" draggable="false">
+      <div id="mascara" class="mascara"><span class="cruz">+</span></div>
+      <!-- Solo se usa en la practica, y nunca dice si acerto -->
+      <div id="retro" class="retro"></div>
+    </div>
+    <div class="rejilla-respuestas" id="rejilla-respuestas"></div>
+  </div>
+  <div class="progreso-ensayo"><div id="progreso-relleno"></div></div>
+</section>
+
+<!-- ============ 8. RESULTADO ============ -->
+<section id="pantalla-resultado" class="pantalla envoltorio">
+  <div class="caja">
+    <h2>Su resultado</h2>
+
+    <div class="marcador">
+      <div class="marcador-cifra"><span id="res-aciertos">0</span><span class="de">/24</span></div>
+      <div class="marcador-etiqueta">emociones reconocidas</div>
+    </div>
+
+    <p class="entrada" id="res-frase"></p>
+
+    <div class="percentil" id="res-percentil"></div>
+
+    <h3>Perfil por emoci&oacute;n</h3>
+    <p class="nota">Su acierto frente al de la muestra de Medell&iacute;n de 2013 (n&nbsp;=&nbsp;252).
+    La l&iacute;nea vertical marca el promedio de aquella muestra.</p>
+    <div id="res-perfil" class="perfil"></div>
+
+    <h3>Cuanto m&aacute;s sutil, m&aacute;s cuesta</h3>
+    <p class="nota">Las cuatro intensidades van de la expresi&oacute;n apenas insinuada (1)
+    a la plena (4). Es el efecto central que mide la prueba.</p>
+    <div id="res-gradiente" class="gradiente"></div>
+
+    <h3>Tiempo de respuesta</h3>
+    <div id="res-tiempos" class="tiempos"></div>
+    <p class="nota" id="res-tiempos-nota"></p>
+
+    <div id="res-confusiones-bloque" hidden>
+      <h3>D&oacute;nde se le fue</h3>
+      <div id="res-confusiones" class="confusiones"></div>
+    </div>
+
+    <h3>&iquest;Para qu&eacute; sirve esto?</h3>
+    <p class="entrada bibliografia">Reconocer emociones en el rostro es una de las habilidades sociales
+    m&aacute;s b&aacute;sicas que tenemos, y tambi&eacute;n de las mejor repartidas. Los estudios transculturales
+    de Ekman y Friesen encontraron que, en cualquier cultura, m&aacute;s del 70% de las personas identifica
+    las mismas seis expresiones, incluso en pueblos que nunca hab&iacute;an tenido contacto con Occidente.
+    Por eso lo llamativo no es sacar un puntaje alto, que es lo corriente, sino lo contrario. Un d&eacute;ficit
+    marcado aparece asociado a condiciones como el trastorno del espectro autista, la esquizofrenia,
+    algunas demencias y ciertas lesiones de la am&iacute;gdala y la corteza orbitofrontal, y suele traducirse
+    en dificultades reales para leer intenciones ajenas y responder de forma adecuada. La buena noticia
+    es que es una habilidad entrenable, y existen programas de entrenamiento que mejoran el desempe&ntilde;o.
+    <strong>Este resultado no es un diagn&oacute;stico ni una medida de su inteligencia emocional.</strong>
+    Es una fotograf&iacute;a de c&oacute;mo le fue hoy en una tarea muy concreta.</p>
+
+    <details class="detalle-tecnico">
+      <summary>Detalle t&eacute;cnico</summary>
+      <div id="res-tecnico"></div>
+      <p class="nota"><a href="#" id="enlace-datos">Descargar los datos en bruto (JSON y CSV)</a>.
+      &Uacute;til solo para el equipo de investigaci&oacute;n.</p>
+    </details>
+
+    <div class="fila-botones">
+      <button class="boton-secundario" id="btn-descargar">Guardar mi resultado</button>
+      <button class="boton-primario" id="btn-terminar">Terminar</button>
+    </div>
+    <p class="nota centrado-texto" id="nota-descarga">Se guarda como imagen, para que pueda mostrarla o compartirla.</p>
+
+    <p class="pie-institucional">
+      Gracias por participar.<br>
+      Programa de Psicolog&iacute;a &middot; Universidad de Antioquia
+    </p>
+  </div>
+</section>
+
+<!-- ============ 9. CIERRE ============ -->
+<section id="pantalla-cierre" class="pantalla envoltorio">
+  <div class="caja centrado">
+    <h2>Gracias</h2>
+    <p class="entrada">Sus respuestas quedaron registradas. Ya puede cerrar esta p&aacute;gina.</p>
+    <p class="pie-institucional">T-Mirfe 2.0 &middot; Universidad de Antioquia</p>
+  </div>
+</section>
+
+<script src="js/config.js"></script>
+<script src="js/marca.js"></script>
+<script src="js/datos.js"></script>
+<script src="js/ensayo.js"></script>
+<script src="js/tarjeta.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>

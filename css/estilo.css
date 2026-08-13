@@ -1,0 +1,577 @@
+/* ==========================================================================
+   T-Mirfe 2.0 - Hoja de estilo
+
+   Dos mundos separados a proposito:
+   .envoltorio  portada, consentimiento, formulario, instrucciones, resultado.
+                Aqui va la identidad institucional.
+   .ensayo      la pantalla de medicion. Sin marca, sin navegacion, sin color.
+                Fondo gris 151 igualado al fondo de las 24 fotografias.
+   ========================================================================== */
+
+:root {
+  /* Muestreados del logosimbolo oficial. Ver marca en config.js */
+  --verde: #0e6e3c;
+  --verde-oscuro: #0a5a30;
+  --verde-claro: #1a8f56;
+  --gris-estimulo: #979797;
+  --tinta: #1c2321;
+  --tinta-suave: #5a6663;
+  --papel: #ffffff;
+  --papel-alt: #f4f6f5;
+  --borde: #d8dedb;
+  --error: #a3261e;
+  --radio: 10px;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  min-height: 100%;
+}
+
+body {
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-size: 17px;
+  line-height: 1.55;
+  color: var(--tinta);
+  background: var(--papel-alt);
+  -webkit-text-size-adjust: 100%;
+}
+
+body.en-ensayo {
+  overflow: hidden;
+  overscroll-behavior: none;
+}
+
+/* --- Pantallas ------------------------------------------------------------ */
+
+.pantalla { display: none; }
+.pantalla.activa { display: block; }
+
+.envoltorio {
+  min-height: 100vh;
+  min-height: 100dvh;
+  padding: 24px 18px 48px;
+}
+
+.caja {
+  max-width: 620px;
+  margin: 0 auto;
+  background: var(--papel);
+  border: 1px solid var(--borde);
+  border-radius: var(--radio);
+  padding: 28px 24px 32px;
+}
+
+.caja.centrado { text-align: center; }
+
+/* --- Marca ---------------------------------------------------------------- */
+
+/* Logosimbolo institucional. Uso pendiente de autorizacion formal de marca
+   ante la Direccion de Comunicaciones (Resolucion Rectoral 48342 de 2021). */
+.logo-udea {
+  display: block;
+  width: 210px;
+  max-width: 62%;
+  height: auto;
+  margin: 0 0 18px;
+}
+
+.marca {
+  padding-bottom: 18px;
+  margin-bottom: 20px;
+  border-bottom: 3px solid var(--verde);
+}
+
+h1 {
+  margin: 0;
+  font-size: 30px;
+  letter-spacing: 0.5px;
+  color: var(--verde);
+}
+
+.subtitulo {
+  margin: 4px 0 0;
+  font-size: 13px;
+  line-height: 1.35;
+  color: var(--tinta-suave);
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+h2 {
+  margin: 0 0 14px;
+  font-size: 22px;
+  color: var(--verde);
+}
+
+h3 {
+  margin: 28px 0 10px;
+  font-size: 17px;
+  color: var(--tinta);
+}
+
+.entrada { margin: 0 0 18px; }
+.nota { font-size: 14px; color: var(--tinta-suave); margin: 6px 0 0; }
+.aviso-orientacion { font-size: 15px; color: var(--tinta-suave); }
+
+.destacado {
+  background: var(--papel-alt);
+  border-left: 4px solid var(--verde-claro);
+  padding: 12px 14px;
+  border-radius: 0 6px 6px 0;
+  margin: 20px 0;
+}
+
+.pie-institucional {
+  margin: 28px 0 0;
+  padding-top: 16px;
+  border-top: 1px solid var(--borde);
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--tinta-suave);
+  text-align: center;
+}
+
+/* --- Texto legal ---------------------------------------------------------- */
+
+.texto-legal {
+  max-height: 46vh;
+  overflow-y: auto;
+  padding: 16px;
+  background: var(--papel-alt);
+  border: 1px solid var(--borde);
+  border-radius: 8px;
+  font-size: 15.5px;
+}
+.texto-legal p { margin: 0 0 12px; }
+.texto-legal p:last-child { margin-bottom: 0; }
+
+.casilla {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  margin: 20px 0;
+  font-size: 16px;
+  cursor: pointer;
+}
+.casilla input { width: 22px; height: 22px; margin: 2px 0 0; flex: 0 0 auto; }
+
+/* --- Formulario ----------------------------------------------------------- */
+
+form label {
+  display: block;
+  margin-bottom: 18px;
+  font-weight: 600;
+  font-size: 15px;
+}
+
+form .ayuda {
+  display: block;
+  font-weight: 400;
+  font-size: 13.5px;
+  line-height: 1.4;
+  color: var(--tinta-suave);
+  margin: 3px 0 6px;
+}
+
+form select, form input[type="text"] {
+  display: block;
+  width: 100%;
+  margin-top: 6px;
+  padding: 12px 12px;
+  font-size: 16px;               /* 16px evita el zoom automatico en iOS */
+  font-family: inherit;
+  font-weight: 400;
+  color: var(--tinta);
+  background: var(--papel);
+  border: 1px solid var(--borde);
+  border-radius: 8px;
+}
+
+form select:focus, form input:focus {
+  outline: 2px solid var(--verde-claro);
+  outline-offset: 1px;
+}
+
+.error-form {
+  color: var(--error);
+  font-size: 15px;
+  margin: 0 0 14px;
+}
+
+.instrucciones { padding-left: 22px; margin: 0 0 4px; }
+.instrucciones li { margin-bottom: 10px; }
+
+/* --- Botones -------------------------------------------------------------- */
+
+.boton-primario, .boton-secundario {
+  font-family: inherit;
+  font-size: 17px;
+  font-weight: 600;
+  padding: 14px 22px;
+  border-radius: 8px;
+  border: 1px solid transparent;
+  cursor: pointer;
+  min-height: 50px;
+}
+
+.boton-primario { background: var(--verde); color: #fff; }
+.boton-primario:hover:not(:disabled) { background: var(--verde-oscuro); }
+.boton-primario:disabled { background: #b7c2bd; cursor: not-allowed; }
+.boton-primario.grande { font-size: 20px; padding: 18px 40px; }
+
+.boton-secundario {
+  background: var(--papel);
+  color: var(--tinta-suave);
+  border-color: var(--borde);
+}
+.boton-secundario:hover { background: var(--papel-alt); }
+
+.fila-botones {
+  display: flex;
+  gap: 12px;
+  margin-top: 22px;
+}
+.fila-botones .boton-primario { flex: 1 1 auto; }
+
+/* --- Barra de carga -------------------------------------------------------- */
+
+.barra {
+  height: 8px;
+  background: var(--borde);
+  border-radius: 4px;
+  overflow: hidden;
+  margin: 22px 0 12px;
+}
+.barra-relleno {
+  height: 100%;
+  width: 0;
+  background: var(--verde-claro);
+  transition: width 0.2s linear;
+}
+
+/* ==========================================================================
+   TUTORIAL GUIADO
+   Las demostraciones van sobre el mismo gris de la pantalla de ensayo, para
+   que el participante llegue a la prueba habiendo visto ya ese fondo.
+   ========================================================================== */
+
+.pasos {
+  display: flex;
+  gap: 7px;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+.paso-punto {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--borde);
+}
+.paso-punto.activo { background: var(--verde); }
+.paso-punto.visto { background: var(--verde-claro); }
+
+.paso { display: none; }
+.paso.activo { display: block; }
+
+.demo-marco {
+  background: var(--gris-estimulo);
+  border-radius: 8px;
+  padding: 14px;
+  margin: 16px 0 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 210px;
+}
+.demo-marco.compacto { min-height: 0; padding: 12px; }
+
+.demo-img {
+  max-height: 240px;
+  width: auto;
+  border-radius: 3px;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+.demo-mascara {
+  min-height: 180px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.demo-rejilla { max-width: 100%; }
+
+/* ==========================================================================
+   PANTALLA DE ENSAYO
+   Sin marca, sin color institucional, sin navegacion. Solo estimulo y
+   respuesta. Cualquier cambio aqui es una variable experimental.
+   ========================================================================== */
+
+.pantalla.ensayo {
+  position: fixed;
+  inset: 0;
+  background: var(--gris-estimulo);
+  display: none;
+}
+.pantalla.ensayo.activa { display: flex; flex-direction: column; }
+
+.ensayo-marco {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  padding: 10px 10px 14px;
+  padding-bottom: calc(14px + env(safe-area-inset-bottom));
+  min-height: 0;
+}
+
+.zona-estimulo {
+  position: relative;
+  flex: 1 1 auto;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 0;
+}
+
+#img-estimulo {
+  max-height: 100%;
+  max-width: 100%;
+  height: auto;
+  width: auto;
+  object-fit: contain;
+  visibility: hidden;
+  user-select: none;
+  -webkit-user-drag: none;
+  -webkit-touch-callout: none;
+}
+
+.mascara {
+  position: absolute;
+  inset: 0;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  background: var(--gris-estimulo);
+}
+.mascara.visible { display: flex; }
+
+.cruz {
+  font-size: 40px;
+  line-height: 1;
+  color: #4a4a4a;
+  font-weight: 300;
+  user-select: none;
+}
+
+/* Aviso de mecanica durante la practica. Nunca informa del acierto. */
+.retro {
+  position: absolute;
+  inset: 0;
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 20px;
+  text-align: center;
+  background: var(--gris-estimulo);
+}
+.retro.visible { display: flex; }
+.retro strong { font-size: 24px; color: #1f1f1f; }
+.retro span { font-size: 15px; color: #3d3d3d; max-width: 380px; line-height: 1.4; }
+
+/* --- Botonera de respuesta -------------------------------------------------- */
+
+.rejilla-respuestas {
+  flex: 0 0 auto;
+  width: 100%;
+  max-width: 900px;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+
+.rejilla-respuestas.en-fila { grid-template-columns: repeat(6, 1fr); }
+.rejilla-respuestas.inactiva { opacity: 0.55; }
+
+.boton-emocion {
+  font-family: inherit;
+  font-size: 17px;
+  font-weight: 600;
+  color: #e8e8e8;
+  background: #3a3a3a;
+  border: 1px solid #2a2a2a;
+  border-radius: 8px;
+  padding: 16px 8px;
+  min-height: 58px;
+  cursor: pointer;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+}
+
+.boton-emocion.elegido {
+  background: #f0f0f0;
+  color: #1a1a1a;
+  border-color: #ffffff;
+}
+
+.boton-emocion:disabled { cursor: default; }
+
+.progreso-ensayo {
+  flex: 0 0 3px;
+  background: rgba(0, 0, 0, 0.18);
+}
+#progreso-relleno {
+  height: 100%;
+  width: 0;
+  background: rgba(255, 255, 255, 0.75);
+  transition: width 0.25s ease;
+}
+
+/* ==========================================================================
+   RESULTADO
+   ========================================================================== */
+
+.marcador {
+  text-align: center;
+  padding: 22px 0 18px;
+  background: var(--papel-alt);
+  border-radius: 10px;
+  margin-bottom: 20px;
+}
+.marcador-cifra { font-size: 52px; font-weight: 700; color: var(--verde); line-height: 1; }
+.marcador-cifra .de { font-size: 24px; font-weight: 400; color: var(--tinta-suave); }
+.marcador-etiqueta { font-size: 14px; color: var(--tinta-suave); margin-top: 6px; }
+
+/* --- Percentil ------------------------------------------------------------ */
+
+.percentil {
+  background: var(--papel-alt);
+  border: 1px solid var(--borde);
+  border-radius: 10px;
+  padding: 18px 16px 14px;
+  margin-bottom: 22px;
+}
+.percentil p { margin: 0 0 4px; font-size: 15.5px; }
+.percentil .nota { margin-top: 6px; }
+
+.percentil-barra {
+  position: relative;
+  height: 10px;
+  border-radius: 5px;
+  margin: 4px 0 16px;
+  background: linear-gradient(to right, #d9e3de, var(--verde-claro));
+}
+.percentil-marca {
+  position: absolute;
+  top: -5px;
+  width: 4px;
+  height: 20px;
+  margin-left: -2px;
+  border-radius: 2px;
+  background: var(--verde);
+  box-shadow: 0 0 0 2px var(--papel-alt);
+}
+
+/* --- Perfiles y gradiente --------------------------------------------------- */
+
+.perfil-fila {
+  display: grid;
+  grid-template-columns: 84px 1fr 44px;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 9px;
+  font-size: 14.5px;
+}
+.perfil-nombre { color: var(--tinta-suave); }
+.perfil-barra {
+  position: relative;
+  height: 18px;
+  background: var(--papel-alt);
+  border: 1px solid var(--borde);
+  border-radius: 4px;
+  overflow: hidden;
+}
+.perfil-relleno { height: 100%; background: var(--verde-claro); }
+.perfil-norma {
+  position: absolute;
+  top: -2px;
+  bottom: -2px;
+  width: 2px;
+  background: var(--tinta);
+  opacity: 0.55;
+}
+.perfil-cifra { text-align: right; color: var(--tinta-suave); font-variant-numeric: tabular-nums; }
+
+.perfil-relleno.azul { background: #4b7fa8; }
+
+.gradiente { margin-bottom: 4px; }
+
+/* --- Confusiones ------------------------------------------------------------ */
+
+.confusion-fila {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 6px;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--borde);
+  font-size: 15px;
+}
+.confusion-fila:last-child { border-bottom: 0; }
+.confusion-de, .confusion-a { font-weight: 700; }
+.confusion-flecha { color: var(--tinta-suave); font-size: 14px; }
+.confusion-n { margin-left: auto; color: var(--tinta-suave); font-size: 13.5px; }
+
+.bibliografia {
+  font-size: 15.5px;
+  line-height: 1.6;
+  background: var(--papel-alt);
+  border-left: 4px solid var(--verde-claro);
+  padding: 14px 16px;
+  border-radius: 0 8px 8px 0;
+}
+
+.centrado-texto { text-align: center; }
+
+.detalle-tecnico { margin-top: 26px; font-size: 14.5px; }
+.detalle-tecnico a { color: var(--verde); }
+.detalle-tecnico summary { cursor: pointer; color: var(--tinta-suave); }
+.detalle-tecnico dl {
+  display: grid;
+  grid-template-columns: minmax(120px, auto) 1fr;
+  gap: 4px 14px;
+  margin: 12px 0 0;
+}
+.detalle-tecnico dt { color: var(--tinta-suave); }
+.detalle-tecnico dd { margin: 0; word-break: break-word; }
+
+/* --- Pantallas anchas ------------------------------------------------------- */
+
+@media (min-width: 760px) {
+  body { font-size: 18px; }
+  .caja { padding: 34px 34px 38px; }
+  .boton-emocion { font-size: 18px; padding: 18px 10px; }
+}
+
+/* --- Pantallas bajas: el estimulo manda ------------------------------------- */
+
+@media (max-height: 620px) {
+  .boton-emocion { min-height: 48px; padding: 12px 6px; font-size: 15.5px; }
+  .rejilla-respuestas { gap: 8px; }
+  .cruz { font-size: 32px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; }
+}

@@ -1,0 +1,6 @@
+# Archivos de trabajo local
+*.csv
+*.sav
+descargas/
+.DS_Store
+Thumbs.db
