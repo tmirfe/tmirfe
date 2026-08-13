@@ -575,3 +575,13 @@ form select:focus, form input:focus {
 @media (prefers-reduced-motion: reduce) {
   * { transition: none !important; }
 }
+
+/* Aviso de derechos en la portada. Discreto pero visible: su funcion es que
+   nadie pueda alegar que no estaba advertido. */
+.aviso-derechos {
+  display: block;
+  margin-top: 10px;
+  font-size: 11.5px;
+  line-height: 1.45;
+  color: var(--borde);
+}
