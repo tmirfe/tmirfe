@@ -4,24 +4,18 @@ Test de Medición del Índice de Reconocimiento Facial de la Emoción.
 Reconstrucción del instrumento original (Restrepo Meneses y Sánchez Velásquez,
 asesoría de Liliana Chaves Castaño, Universidad de Antioquia, 2013).
 
-## Publicar en línea
+## En línea
 
-El repositorio ya está iniciado y con el primer commit hecho. Faltan tres pasos,
-que requieren tu cuenta:
+**https://sugarmask.github.io/tmirfe/**
 
-1. **GitHub Desktop** (ya instalado). File → Add local repository → elegir
-   `C:\Users\sugar\Documents\Claude Varios\tmirfe` → Publish repository.
-   Desmarcar «Keep this code private», porque GitHub Pages gratuito necesita
-   que el repositorio sea público.
-2. En github.com, dentro del repositorio: Settings → Pages → Source →
-   «Deploy from a branch» → rama `main`, carpeta `/ (root)` → Save.
-3. Al minuto queda en `https://TU-USUARIO.github.io/tmirfe/`.
+Publicado con GitHub Pages desde la rama `main`, carpeta raíz. Todo va con rutas
+relativas, así que funciona igual en la raíz de un dominio o en un
+subdirectorio.
 
-Todo va con rutas relativas, así que funciona igual en la raíz del dominio o en
-un subdirectorio. No hace falta tocar nada más.
+Para separar grupos de aplicación, añadir la cohorte al enlace:
+`https://sugarmask.github.io/tmirfe/?c=piloto`
 
-Para separar grupos, añadir la cohorte al enlace:
-`https://TU-USUARIO.github.io/tmirfe/?c=piloto`
+Cada `git push` a `main` republica el sitio en menos de un minuto.
 
 ## Cómo se usa
 
