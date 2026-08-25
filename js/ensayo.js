@@ -270,8 +270,28 @@ var ENSAYO = (function () {
     cerrarEnsayo({
       respondio: true,
       respuesta: b.dataset.emocion,
-      tr_ms: +(t1 - t0).toFixed(1)
+      tr_ms: +(t1 - t0).toFixed(1),
+      margen_toque: margenDeToque(evt, b)
     });
+  }
+
+  /* Cuanto se acerco el dedo al borde del boton, de 0 (centro) a 1 (borde).
+     Un valor alto significa que estuvo a punto de tocar el de al lado. No
+     corrige nada por si mismo, pero permite estimar despues cuantas respuestas
+     pudieron ser un toque equivocado y no una eleccion. Lo pidio Norvey el
+     13 de agosto de 2026. */
+
+  function margenDeToque(evt, boton) {
+    try {
+      var r = boton.getBoundingClientRect();
+      if (!r.width || !r.height) return null;
+      var x = (typeof evt.clientX === 'number') ? evt.clientX : null;
+      var y = (typeof evt.clientY === 'number') ? evt.clientY : null;
+      if (x === null || y === null) return null;
+      var dx = Math.abs(x - (r.left + r.width / 2)) / (r.width / 2);
+      var dy = Math.abs(y - (r.top + r.height / 2)) / (r.height / 2);
+      return +Math.max(dx, dy).toFixed(3);
+    } catch (e) { return null; }
   }
 
   function vencer() {
@@ -295,7 +315,8 @@ var ENSAYO = (function () {
       t_onset_ms: t0 === null ? null : +t0.toFixed(1),
       demora_pintado_ms: (t0 === null || tInicioEnsayo === null) ? null : +(t0 - tInicioEnsayo).toFixed(1),
       onset_por_respaldo: onsetPorRespaldo,
-      interrumpido: interrumpido
+      interrumpido: interrumpido,
+      margen_toque: (typeof res.margen_toque === 'undefined') ? null : res.margen_toque
     }, enPractica);
 
     t0 = null;

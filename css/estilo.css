@@ -326,7 +326,9 @@ form select:focus, form input:focus {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 14px;
+  /* Cuanto mas cerca esta la botonera del estimulo, menos recorrido tiene que
+     hacer el dedo y menos tiempo motor se suma a la latencia. */
+  gap: 10px;
   padding: 10px 10px 14px;
   padding-bottom: calc(14px + env(safe-area-inset-bottom));
   min-height: 0;
@@ -397,7 +399,10 @@ form select:focus, form input:focus {
   max-width: 900px;
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 10px;
+  /* La separacion entre botones no es cosmetica: el hueco entre dos blancos es
+     lo que evita que el pulgar acierte al de al lado. Norvey lo reporto el
+     13 de agosto de 2026 probando la version anterior, con 10px. */
+  gap: 14px;
 }
 
 .rejilla-respuestas.en-fila { grid-template-columns: repeat(6, 1fr); }
@@ -411,8 +416,8 @@ form select:focus, form input:focus {
   background: #3a3a3a;
   border: 1px solid #2a2a2a;
   border-radius: 8px;
-  padding: 16px 8px;
-  min-height: 58px;
+  padding: 18px 8px;
+  min-height: 64px;
   cursor: pointer;
   touch-action: manipulation;
   -webkit-tap-highlight-color: transparent;
@@ -567,8 +572,8 @@ form select:focus, form input:focus {
 /* --- Pantallas bajas: el estimulo manda ------------------------------------- */
 
 @media (max-height: 620px) {
-  .boton-emocion { min-height: 48px; padding: 12px 6px; font-size: 15.5px; }
-  .rejilla-respuestas { gap: 8px; }
+  .boton-emocion { min-height: 54px; padding: 14px 6px; font-size: 15.5px; }
+  .rejilla-respuestas { gap: 11px; }
   .cruz { font-size: 32px; }
 }
 

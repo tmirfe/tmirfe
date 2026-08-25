@@ -122,7 +122,10 @@ var DATOS = (function () {
       // Banderas de calidad. No excluyen nada por si mismas: la decision se
       // toma al analizar, pero el dato queda marcado en el origen.
       onset_por_respaldo: !!e.onset_por_respaldo,
-      interrumpido: !!e.interrumpido
+      interrumpido: !!e.interrumpido,
+      // 0 = el dedo cayo en el centro del boton, 1 = justo en el borde.
+      // Sirve para estimar cuantas respuestas pudieron ser un toque errado.
+      margen_toque: (e.margen_toque === undefined) ? null : e.margen_toque
     };
     if (esPractica) registro.practica.push(fila); else registro.ensayos.push(fila);
     return fila;
@@ -237,7 +240,8 @@ var DATOS = (function () {
     'tipo_entrada', 'ancho_ventana', 'alto_ventana', 'densidad_pixeles',
     'modo_presentacion', 'ms_exposicion',
     'orden', 'emocion', 'intensidad', 'respondio', 'respuesta', 'acierto',
-    'tr_ms', 'censurado', 'tr_bajo_minimo', 'onset_por_respaldo', 'interrumpido'
+    'tr_ms', 'censurado', 'tr_bajo_minimo', 'onset_por_respaldo', 'interrumpido',
+    'margen_toque'
   ];
 
   function aFilasLargas(r) {
@@ -253,7 +257,8 @@ var DATOS = (function () {
         f.orden, f.emocion, f.intensidad, f.respondio ? 1 : 0, f.respuesta === null ? '' : f.respuesta,
         f.acierto === null ? '' : f.acierto,
         f.tr_ms === null ? '' : f.tr_ms, f.censurado ? 1 : 0, f.tr_bajo_minimo ? 1 : 0,
-        f.onset_por_respaldo ? 1 : 0, f.interrumpido ? 1 : 0
+        f.onset_por_respaldo ? 1 : 0, f.interrumpido ? 1 : 0,
+        f.margen_toque === null || f.margen_toque === undefined ? '' : f.margen_toque
       ];
     });
   }

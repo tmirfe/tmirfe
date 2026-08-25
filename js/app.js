@@ -60,7 +60,13 @@
 
   var selAnio = document.getElementById('sel-anio');
   var anioActual = new Date().getFullYear();
-  for (var a = anioActual - 15; a >= anioActual - 90; a--) {
+  // Desde los 18. En Colombia la mayoria de edad es a los 18, y la Resolucion
+  // 8430 de 1993 exige, para menores, consentimiento de quien ejerce la patria
+  // potestad (art. 25) mas el asentimiento del propio menor (art. 26). Una
+  // casilla marcada en un telefono no cumple ninguna de las dos cosas.
+  // El estudio de 2013 admitia desde los 15, lo cual conviene declarar como
+  // limitacion. Para entrar a colegios hace falta otro protocolo.
+  for (var a = anioActual - 18; a >= anioActual - 90; a--) {
     var op = document.createElement('option');
     op.value = a; op.textContent = a;
     selAnio.appendChild(op);
