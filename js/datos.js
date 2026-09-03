@@ -68,6 +68,7 @@ var DATOS = (function () {
         alto_imagen_css: null
       },
       practica: [],
+      calibracion: [],
       ensayos: [],
       resumen: null,
       incidencias: []
@@ -131,6 +132,29 @@ var DATOS = (function () {
     return fila;
   }
 
+  /* Calibracion motora: en el centro aparece el nombre de una emocion y la
+     persona toca su boton. 'correcto' significa que toco el boton pedido; la
+     latencia captura busqueda de la etiqueta mas movimiento, sin juicio
+     emocional. */
+
+  function anotarCalibracion(e) {
+    var fila = {
+      orden: e.orden,
+      objetivo: e.objetivo,
+      respondio: e.respondio,
+      respuesta: e.respuesta,
+      correcto: e.respondio ? (e.respuesta === e.objetivo ? 1 : 0) : null,
+      tr_ms: e.tr_ms,
+      tr_bajo_minimo: (e.tr_ms !== null && e.tr_ms < CONFIG.msMinimoValido),
+      censurado: !e.respondio,
+      onset_por_respaldo: !!e.onset_por_respaldo,
+      interrumpido: !!e.interrumpido,
+      margen_toque: (e.margen_toque === undefined) ? null : e.margen_toque
+    };
+    registro.calibracion.push(fila);
+    return fila;
+  }
+
   /* --- Resumen -----------------------------------------------------------
      Se calculan dos puntajes:
        aciertos           0 a 24, la medida real de reconocimiento
@@ -177,6 +201,30 @@ var DATOS = (function () {
       }
     });
 
+    // Resumen de la calibracion motora: mediana por boton, para poder restar
+    // despues el componente motor de la latencia de cada ensayo del test.
+    function mediana(v) {
+      if (!v.length) return null;
+      var s = v.slice().sort(function (a, b) { return a - b; });
+      var m = Math.floor(s.length / 2);
+      return s.length % 2 ? Math.round(s[m]) : Math.round((s[m - 1] + s[m]) / 2);
+    }
+    var cal = registro.calibracion || [];
+    var calPorBoton = {};
+    CONFIG.emociones.forEach(function (em) {
+      var filas = cal.filter(function (f) { return f.objetivo === em.clave; });
+      var ts = filas.filter(function (f) { return f.correcto === 1 && f.tr_ms !== null; })
+                    .map(function (f) { return f.tr_ms; });
+      calPorBoton[em.clave] = {
+        n: filas.length,
+        tr_mediana_ms: mediana(ts),
+        errores: filas.filter(function (f) { return f.correcto === 0; }).length,
+        sin_respuesta: filas.filter(function (f) { return !f.respondio; }).length
+      };
+    });
+    var calTs = cal.filter(function (f) { return f.correcto === 1 && f.tr_ms !== null; })
+                   .map(function (f) { return f.tr_ms; });
+
     function media(o) { return o.n_tr ? Math.round(o.suma_tr / o.n_tr) : null; }
     Object.keys(porEmocion).forEach(function (k) { porEmocion[k].tr_medio_ms = media(porEmocion[k]); });
     Object.keys(porIntensidad).forEach(function (k) { porIntensidad[k].tr_medio_ms = media(porIntensidad[k]); });
@@ -193,6 +241,12 @@ var DATOS = (function () {
       indice_compat_2013: compat,
       tr_medio_ms: nTr ? Math.round(sumaTr / nTr) : null,
       tr_total_ms: sumaTr ? Math.round(sumaTr) : null,
+      calibracion: cal.length ? {
+        n: cal.length,
+        tr_mediana_ms: mediana(calTs),
+        errores: cal.filter(function (f) { return f.correcto === 0; }).length,
+        por_boton: calPorBoton
+      } : null,
       por_emocion: porEmocion,
       por_intensidad: porIntensidad,
       confusiones: confusiones
@@ -239,28 +293,41 @@ var DATOS = (function () {
     'estado_civil', 'nivel_educativo', 'ocupacion',
     'tipo_entrada', 'ancho_ventana', 'alto_ventana', 'densidad_pixeles',
     'modo_presentacion', 'ms_exposicion',
-    'orden', 'emocion', 'intensidad', 'respondio', 'respuesta', 'acierto',
+    'fase', 'orden', 'emocion', 'intensidad', 'respondio', 'respuesta', 'acierto',
     'tr_ms', 'censurado', 'tr_bajo_minimo', 'onset_por_respaldo', 'interrumpido',
     'margen_toque'
   ];
 
   function aFilasLargas(r) {
     var p = r.participante || {}, a = r.aparato || {}, pr = r.presentacion || {};
-    return r.ensayos.map(function (f) {
-      return [
-        r.id, r.cohorte, r.version_app, r.inicio, r.fin,
-        p.sexo, p.anio_nacimiento, p.edad, p.ciudad_residencia,
-        p.ciudad_fuera_de_lista ? 1 : 0, p.crianza,
-        p.estado_civil, p.nivel_educativo, p.ocupacion,
-        a.tipo_entrada, a.ancho_ventana, a.alto_ventana, a.densidad_pixeles,
-        pr.modo, pr.ms_exposicion,
-        f.orden, f.emocion, f.intensidad, f.respondio ? 1 : 0, f.respuesta === null ? '' : f.respuesta,
+    var prefijo = [
+      r.id, r.cohorte, r.version_app, r.inicio, r.fin,
+      p.sexo, p.anio_nacimiento, p.edad, p.ciudad_residencia,
+      p.ciudad_fuera_de_lista ? 1 : 0, p.crianza,
+      p.estado_civil, p.nivel_educativo, p.ocupacion,
+      a.tipo_entrada, a.ancho_ventana, a.alto_ventana, a.densidad_pixeles,
+      pr.modo, pr.ms_exposicion
+    ];
+    var filas = (r.calibracion || []).map(function (f) {
+      return prefijo.concat([
+        'calibracion', f.orden, f.objetivo, '', f.respondio ? 1 : 0,
+        f.respuesta === null ? '' : f.respuesta,
+        f.correcto === null ? '' : f.correcto,
+        f.tr_ms === null ? '' : f.tr_ms, f.censurado ? 1 : 0, f.tr_bajo_minimo ? 1 : 0,
+        f.onset_por_respaldo ? 1 : 0, f.interrumpido ? 1 : 0,
+        f.margen_toque === null || f.margen_toque === undefined ? '' : f.margen_toque
+      ]);
+    });
+    return filas.concat(r.ensayos.map(function (f) {
+      return prefijo.concat([
+        'test', f.orden, f.emocion, f.intensidad, f.respondio ? 1 : 0,
+        f.respuesta === null ? '' : f.respuesta,
         f.acierto === null ? '' : f.acierto,
         f.tr_ms === null ? '' : f.tr_ms, f.censurado ? 1 : 0, f.tr_bajo_minimo ? 1 : 0,
         f.onset_por_respaldo ? 1 : 0, f.interrumpido ? 1 : 0,
         f.margen_toque === null || f.margen_toque === undefined ? '' : f.margen_toque
-      ];
-    });
+      ]);
+    }));
   }
 
   function aCsv(registros) {
@@ -329,6 +396,7 @@ var DATOS = (function () {
     anotarPresentacion: anotarPresentacion,
     anotarIncidencia: anotarIncidencia,
     anotarEnsayo: anotarEnsayo,
+    anotarCalibracion: anotarCalibracion,
     cerrar: cerrar,
     yaRespondio: yaRespondio,
     todosLosRegistros: todosLosRegistros,

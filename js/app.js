@@ -201,18 +201,34 @@
 
   /* --- Practica ------------------------------------------------------------- */
 
+  function alListo() {
+    document.getElementById('titulo-listo').textContent = 'Ya sabe cómo es';
+    document.getElementById('txt-listo').innerHTML =
+      'Ahora viene la prueba: 24 fotografías, unos cuatro minutos.<br>' +
+      'Recuerde responder <strong>lo más rápido que pueda, sin equivocarse</strong>.';
+    ir(precargaLista ? 'pantalla-listo' : 'pantalla-carga');
+  }
+
   document.getElementById('btn-practica').addEventListener('click', function () {
     ir('pantalla-ensayo');
     ENSAYO.iniciar({
       practica: true,
       alTerminar: function () {
-        document.getElementById('titulo-listo').textContent = 'Ya sabe cómo es';
-        document.getElementById('txt-listo').innerHTML =
-          'Ahora viene la prueba: 24 fotografías, unos cuatro minutos.<br>' +
-          'Recuerde responder <strong>lo más rápido que pueda, sin equivocarse</strong>.';
-        ir(precargaLista ? 'pantalla-listo' : 'pantalla-carga');
+        // Tras la practica viene la calibracion motora, si esta activa.
+        if (CONFIG.calibracion && CONFIG.calibracion.activa) {
+          ir('pantalla-calibracion');
+        } else {
+          alListo();
+        }
       }
     });
+  });
+
+  /* --- Calibracion motora ------------------------------------------------- */
+
+  document.getElementById('btn-calibrar').addEventListener('click', function () {
+    ir('pantalla-ensayo');
+    ENSAYO.calibrar({ alTerminar: alListo });
   });
 
   /* --- Prueba ----------------------------------------------------------------- */
@@ -422,6 +438,10 @@
         (r.tr_total_ms / 1000).toFixed(1).replace('.', ',') + ' s ' +
         '<span class="nota">(en 2013 la prueba completa promedió ' +
         String(CONFIG.normas2013.tiempoTotalMedioSeg).replace('.', ',') + ' s)</span>') + '</dd>' +
+      (r.calibracion ? '<dt>Calibración motora</dt><dd>mediana de ' +
+        r.calibracion.tr_mediana_ms + ' ms en ' + r.calibracion.n + ' toques' +
+        (r.calibracion.errores ? ', ' + r.calibracion.errores + ' errado(s)' : '') +
+        '</dd>' : '') +
       '<dt>Ensayos marcados</dt><dd>' + r.ensayos_marcados + ' de ' + r.n_ensayos + '</dd>' +
       '<dt>Índice compatible 2013</dt><dd>' + r.indice_compat_2013 + ' de 48 ' +
         '<span class="nota">(escala antigua, solo para comparar con los baremos de aquel estudio)</span></dd>' +

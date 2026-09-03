@@ -615,3 +615,21 @@ form select:focus, form input:focus {
   color: var(--tinta);
 }
 .autores-nombres:last-child { margin-bottom: 0; }
+
+
+/* Palabra de la calibracion motora. Ocupa el lugar del estimulo, sobre el
+   mismo gris, para que el flujo visual (centro y luego botonera) sea el del
+   test. */
+.palabra-cue {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 46px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: #2e2e2e;
+  user-select: none;
+}
+.palabra-cue[hidden] { display: none; }

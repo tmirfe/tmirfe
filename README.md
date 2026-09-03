@@ -88,6 +88,26 @@ Así nadie llega a la prueba con un estímulo ya visto. El desprecio sirve porqu
 no está entre las seis opciones de respuesta, de modo que practicar con él no
 enseña ninguna correspondencia que la prueba vaya a evaluar.
 
+## Calibración motora
+
+Entre la práctica y el test hay un ejercicio de doce toques: en el centro
+aparece el **nombre** de una emoción y la persona toca su botón lo más rápido
+que pueda. Dos veces por botón, en orden aleatorio sin repetir botón seguido,
+con el mismo motor de cronometría del test.
+
+Responde a una observación de Norvey (13 de agosto de 2026): la latencia de un
+ensayo del test no es solo juicio emocional, también incluye buscar la etiqueta
+en la botonera y llevar el dedo hasta ella, y ese componente motor varía entre
+personas y entre posiciones de botón. La calibración lo mide por separado: como
+no hay nada que adivinar, la mediana por botón estima el costo de búsqueda y
+movimiento de esa persona hacia ese botón, y al analizar puede restarse de la
+latencia de los ensayos reales.
+
+En los datos, las filas de calibración van con `fase = calibracion` (las del
+test con `fase = test`) y guardan `objetivo`, `respuesta`, `correcto` y
+`tr_ms`. El resumen incluye la mediana global y por botón. Se puede desactivar
+poniendo `calibracion.activa = false` en `js/config.js`.
+
 ## Sin código personal
 
 Hubo un campo que pedía un código mnemotécnico (dos letras del nombre de la
@@ -174,8 +194,8 @@ imagen), de modo que cualquier comparación futura sea analizable.
   de udea.edu.co. Hay que reemplazarlos por los valores exactos del Manual de
   Identidad Institucional (Resolución Rectoral 48342 de 2021). El portal rechaza
   la descarga automática del PDF.
-- **Escudo.** El espacio está reservado en la portada, vacío, a la espera de la
-  autorización de uso de marca.
+- **Escudo.** El logosímbolo ya está en la portada; falta formalizar la
+  autorización de uso de marca ante la Dirección de Comunicaciones.
 - **Backend.** Al crear el proyecto en Supabase, llenar `url` y `anonKey` en
   `config.js`. Mientras tanto la aplicación funciona igual y guarda en el
   navegador. La clave `anon public` es pública por diseño y puede ir en el

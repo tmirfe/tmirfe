@@ -73,6 +73,19 @@ var CONFIG = {
 
   msRetroalimentacion: 1600,   // cuanto dura el aviso de mecanica en la practica
 
+  /* --- Calibracion motora (observacion de Norvey, 13-08-2026) --------------
+     Bloque corto entre la practica y el test: en el centro aparece el NOMBRE
+     de una emocion y la persona toca su boton lo mas rapido que puede. Como no
+     hay juicio emocional, la latencia captura solo la busqueda de la etiqueta
+     y el movimiento del dedo hasta cada boton. Restada de la latencia del
+     test, deja una estimacion mas limpia del tiempo de reconocimiento. */
+  calibracion: {
+    activa: true,
+    ensayosPorEmocion: 2,     // 12 toques en total, menos de un minuto
+    msExposicion: 6000,       // misma ventana que el test
+    msMascara: 800            // pausa breve entre toques
+  },
+
   /* --- Cronometria ------------------------------------------------------ */
 
   msExposicion: 6000,   // ventana de respuesta, igual a la de 2013

@@ -23,9 +23,10 @@ var ENSAYO = (function () {
   var onsetPorRespaldo = false;   // el cronometro arranco sin fotograma confirmado
   var interrumpido = false;       // la pestana perdio el foco durante el ensayo
   var enPractica = false;
+  var enCalibracion = false;      // bloque de calibracion motora
   var alTerminar = null;
 
-  var elImagen, elMascara, elRejilla, elProgreso, elRetro;
+  var elImagen, elMascara, elRejilla, elProgreso, elRetro, elPalabra;
 
   /* Si la persona sale de la aplicacion en mitad de un ensayo (una notificacion,
      una llamada), la latencia de ese ensayo deja de ser interpretable. No se
@@ -194,6 +195,7 @@ var ENSAYO = (function () {
 
   function mostrarMascara(ms, luego) {
     elImagen.style.visibility = 'hidden';
+    if (elPalabra) elPalabra.hidden = true;
     elMascara.classList.add('visible');
     setTimeout(function () {
       elMascara.classList.remove('visible');
@@ -212,20 +214,30 @@ var ENSAYO = (function () {
     habilitar(false);
     tInicioEnsayo = performance.now();
 
-    var img = imagenes[it.archivo];
-    elImagen.src = img ? img.src : CONFIG.rutaFotos + it.archivo;
+    var esCal = enCalibracion;
+    if (esCal) {
+      elPalabra.textContent = it.etiqueta;
+    } else {
+      var img = imagenes[it.archivo];
+      elImagen.src = img ? img.src : CONFIG.rutaFotos + it.archivo;
+    }
 
     var arrancado = false;
     var arrancar = function (porRespaldo) {
       if (arrancado) return;
       arrancado = true;
       clearTimeout(respaldo);
-      elImagen.style.visibility = 'visible';
+      if (esCal) {
+        elPalabra.hidden = false;
+      } else {
+        elImagen.style.visibility = 'visible';
+        medirImagen();
+      }
       t0 = performance.now();
       onsetPorRespaldo = porRespaldo;
-      medirImagen();
       habilitar(true);
-      temporizador = setTimeout(vencer, CONFIG.msExposicion);
+      temporizador = setTimeout(vencer,
+        esCal ? CONFIG.calibracion.msExposicion : CONFIG.msExposicion);
     };
 
     // El respaldo se arma ANTES de decodificar, porque el ensayo se puede
@@ -234,16 +246,24 @@ var ENSAYO = (function () {
     // dispare (pestana en segundo plano). Cubre las dos.
     respaldo = setTimeout(function () { arrancar(true); }, CONFIG.msRespaldoPintado);
 
-    var pintar = function () {
-      elImagen.style.visibility = 'visible';
-      // Camino normal: el cronometro arranca cuando el fotograma con la imagen
-      // ya esta compuesto en pantalla.
+    if (esCal) {
+      // La palabra no necesita decodificarse: se revela y se espera el
+      // fotograma pintado, igual que con la fotografia.
+      elPalabra.hidden = false;
       requestAnimationFrame(function () {
         requestAnimationFrame(function () { arrancar(false); });
       });
-    };
-
-    if (elImagen.decode) elImagen.decode().then(pintar).catch(pintar); else pintar();
+    } else {
+      var pintar = function () {
+        elImagen.style.visibility = 'visible';
+        // Camino normal: el cronometro arranca cuando el fotograma con la
+        // imagen ya esta compuesto en pantalla.
+        requestAnimationFrame(function () {
+          requestAnimationFrame(function () { arrancar(false); });
+        });
+      };
+      if (elImagen.decode) elImagen.decode().then(pintar).catch(pintar); else pintar();
+    }
   }
 
   function instanteDe(evt) {
@@ -304,20 +324,33 @@ var ENSAYO = (function () {
 
   function cerrarEnsayo(res) {
     var it = secuencia[indice];
-    DATOS.anotarEnsayo({
-      orden: indice + 1,
-      emocion: it.emocion,
-      intensidad: it.intensidad,
-      archivo: it.archivo,
-      respondio: res.respondio,
-      respuesta: res.respuesta,
-      tr_ms: res.tr_ms,
-      t_onset_ms: t0 === null ? null : +t0.toFixed(1),
-      demora_pintado_ms: (t0 === null || tInicioEnsayo === null) ? null : +(t0 - tInicioEnsayo).toFixed(1),
-      onset_por_respaldo: onsetPorRespaldo,
-      interrumpido: interrumpido,
-      margen_toque: (typeof res.margen_toque === 'undefined') ? null : res.margen_toque
-    }, enPractica);
+    if (enCalibracion) {
+      DATOS.anotarCalibracion({
+        orden: indice + 1,
+        objetivo: it.emocion,
+        respondio: res.respondio,
+        respuesta: res.respuesta,
+        tr_ms: res.tr_ms,
+        onset_por_respaldo: onsetPorRespaldo,
+        interrumpido: interrumpido,
+        margen_toque: (typeof res.margen_toque === 'undefined') ? null : res.margen_toque
+      });
+    } else {
+      DATOS.anotarEnsayo({
+        orden: indice + 1,
+        emocion: it.emocion,
+        intensidad: it.intensidad,
+        archivo: it.archivo,
+        respondio: res.respondio,
+        respuesta: res.respuesta,
+        tr_ms: res.tr_ms,
+        t_onset_ms: t0 === null ? null : +t0.toFixed(1),
+        demora_pintado_ms: (t0 === null || tInicioEnsayo === null) ? null : +(t0 - tInicioEnsayo).toFixed(1),
+        onset_por_respaldo: onsetPorRespaldo,
+        interrumpido: interrumpido,
+        margen_toque: (typeof res.margen_toque === 'undefined') ? null : res.margen_toque
+      }, enPractica);
+    }
 
     t0 = null;
     indice++;
@@ -328,7 +361,7 @@ var ENSAYO = (function () {
         mostrarMascara(CONFIG.msMascara, siguiente);
       });
     } else {
-      mostrarMascara(CONFIG.msMascara, siguiente);
+      mostrarMascara(enCalibracion ? CONFIG.calibracion.msMascara : CONFIG.msMascara, siguiente);
     }
   }
 
@@ -356,7 +389,10 @@ var ENSAYO = (function () {
 
   function terminar() {
     elImagen.style.visibility = 'hidden';
-    if (typeof alTerminar === 'function') alTerminar(enPractica);
+    if (elPalabra) elPalabra.hidden = true;
+    var fueCalibracion = enCalibracion;
+    enCalibracion = false;
+    if (typeof alTerminar === 'function') alTerminar(enPractica, fueCalibracion);
   }
 
   /* --- Arranque ------------------------------------------------------------ */
@@ -378,6 +414,7 @@ var ENSAYO = (function () {
 
   function iniciar(opciones) {
     enPractica = !!opciones.practica;
+    enCalibracion = false;
     alTerminar = opciones.alTerminar;
 
     elImagen   = document.getElementById('img-estimulo');
@@ -385,6 +422,7 @@ var ENSAYO = (function () {
     elRejilla  = document.getElementById('rejilla-respuestas');
     elProgreso = document.getElementById('progreso-relleno');
     elRetro    = document.getElementById('retro');
+    elPalabra  = document.getElementById('palabra-cue');
 
     montarBotones();
     elRejilla.removeEventListener('pointerdown', responder);
@@ -417,9 +455,65 @@ var ENSAYO = (function () {
     setTimeout(siguiente, 800);
   }
 
+  /* --- Calibracion motora (observacion de Norvey) --------------------------
+     Doce toques, dos por boton, en orden aleatorio sin repetir boton seguido.
+     Mismo motor de cronometria que el test. */
+
+  function secuenciaCalibracion() {
+    var base = [];
+    CONFIG.emociones.forEach(function (em) {
+      for (var r = 0; r < CONFIG.calibracion.ensayosPorEmocion; r++) {
+        base.push({ emocion: em.clave, etiqueta: em.etiqueta, intensidad: null, archivo: null });
+      }
+    });
+    for (var intento = 0; intento < 500; intento++) {
+      var s = barajar(base.slice());
+      var ok = true;
+      for (var i = 1; i < s.length; i++) {
+        if (s[i].emocion === s[i - 1].emocion) { ok = false; break; }
+      }
+      if (ok) return s;
+    }
+    return barajar(base.slice());
+  }
+
+  function calibrar(opciones) {
+    enPractica = false;
+    enCalibracion = true;
+    alTerminar = opciones.alTerminar;
+
+    elImagen   = document.getElementById('img-estimulo');
+    elMascara  = document.getElementById('mascara');
+    elRejilla  = document.getElementById('rejilla-respuestas');
+    elProgreso = document.getElementById('progreso-relleno');
+    elRetro    = document.getElementById('retro');
+    elPalabra  = document.getElementById('palabra-cue');
+
+    montarBotones();
+    elRejilla.removeEventListener('pointerdown', responder);
+    elRejilla.addEventListener('pointerdown', responder);
+
+    secuencia = secuenciaCalibracion();
+    indice = 0;
+    if (elProgreso) elProgreso.style.width = '0%';
+    document.body.style.background = CONFIG.presentacion.fondoEnsayo;
+    elImagen.style.visibility = 'hidden';
+
+    DATOS.anotarPresentacion({
+      calibracion_motora: {
+        ensayos: secuencia.length,
+        ms_exposicion: CONFIG.calibracion.msExposicion,
+        ms_mascara: CONFIG.calibracion.msMascara
+      }
+    });
+
+    setTimeout(siguiente, 600);
+  }
+
   return {
     precargar: precargar,
     iniciar: iniciar,
+    calibrar: calibrar,
     generarSecuencia: generarSecuencia   // expuesta para poder verificarla
   };
 })();
