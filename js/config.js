@@ -172,11 +172,17 @@ var CONFIG = {
 
   /* --- Envio de datos ---------------------------------------------------
      Mientras no haya backend, la aplicacion funciona igual y guarda en el
-     navegador. Al conectar Supabase basta con llenar estos dos campos.     */
+     navegador. Al conectar Supabase se llenan url y anonKey.
+
+     recoleccionAbierta es la compuerta etica: mientras sea false, la app solo
+     envia las aplicaciones de prueba del equipo (enlace con ?c=prueba), que el
+     analisis excluye. Se pone en true el dia que el comite de etica apruebe. */
   supabase: {
-    url: '',        // Project URL
-    anonKey: '',    // clave anon public (es publica por diseno)
-    tabla: 'aplicaciones'
+    url: '',        // Project URL, https://<proyecto>.supabase.co
+    anonKey: '',    // clave publicable (sb_publishable_...); es publica por diseno
+    tabla: 'aplicaciones',
+    recoleccionAbierta: false,
+    cohortePrueba: 'prueba'
   },
 
   /* --- Varios ----------------------------------------------------------- */

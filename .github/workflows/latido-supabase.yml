@@ -1,0 +1,28 @@
+# Los proyectos gratuitos de Supabase se pausan tras una semana sin actividad,
+# y una base pausada rechaza los envios. Este latido diario consulta el conteo
+# de aplicaciones (sin tocar ningun dato) y mantiene el proyecto activo.
+# Lee la direccion y la clave publicable de js/config.js; si estan vacias, no
+# hace nada. GitHub apaga los latidos programados de un repositorio publico
+# tras 60 dias sin cambios: si llega ese aviso, se reactiva desde Actions.
+name: Latido de la base de datos
+
+on:
+  schedule:
+    - cron: '17 11 * * *'   # todos los dias, 6:17 a. m. hora de Colombia
+  workflow_dispatch:
+
+jobs:
+  latido:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Consultar el conteo de aplicaciones
+        run: |
+          URL=$(sed -n "s/^ *url: *'\([^']*\)'.*/\1/p" js/config.js | head -1)
+          CLAVE=$(sed -n "s/^ *anonKey: *'\([^']*\)'.*/\1/p" js/config.js | head -1)
+          if [ -z "$URL" ] || [ -z "$CLAVE" ]; then
+            echo "La base de datos aun no esta configurada: nada que hacer."
+            exit 0
+          fi
+          curl -sS --fail-with-body -X POST "$URL/rest/v1/rpc/contar_aplicaciones" \
+            -H "apikey: $CLAVE" -H "Content-Type: application/json" -d '{}'

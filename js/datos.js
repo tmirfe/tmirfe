@@ -368,25 +368,49 @@ var DATOS = (function () {
 
   /* --- Envio remoto (queda listo para cuando exista el proyecto) ---------- */
 
+  /* Se reintenta ante fallos de red o del servidor (5xx), no ante rechazos
+     (4xx): un registro repetido o invalido no mejora insistiendo.
+     No se usa keepalive: algunos navegadores lo rechazan en peticiones con
+     verificacion previa (CORS), y las de Supabase la necesitan. */
+  var ESPERAS_REINTENTO = [1500, 4000];
+
   function enviar() {
-    if (!CONFIG.supabase.url || !CONFIG.supabase.anonKey) {
+    var sb = CONFIG.supabase;
+    if (!sb.url || !sb.anonKey) {
       return Promise.resolve({ enviado: false, motivo: 'sin backend configurado' });
     }
-    return fetch(CONFIG.supabase.url + '/rest/v1/' + CONFIG.supabase.tabla, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'apikey': CONFIG.supabase.anonKey,
-        'Authorization': 'Bearer ' + CONFIG.supabase.anonKey,
-        'Prefer': 'return=minimal'
-      },
-      body: JSON.stringify({ id: registro.id, cohorte: registro.cohorte, contenido: registro })
-    }).then(function (r) {
-      return { enviado: r.ok, estado: r.status };
-    }).catch(function (e) {
-      anotarIncidencia('fallo el envio remoto', String(e));
-      return { enviado: false, motivo: String(e) };
-    });
+    if (!sb.recoleccionAbierta && registro.cohorte !== sb.cohortePrueba) {
+      return Promise.resolve({ enviado: false, motivo: 'recoleccion cerrada' });
+    }
+    var cuerpo = JSON.stringify({ id: registro.id, cohorte: registro.cohorte, contenido: registro });
+    var encabezados = {
+      'Content-Type': 'application/json',
+      'apikey': sb.anonKey,
+      'Prefer': 'return=minimal'
+    };
+    // Las claves antiguas (anon) son JWT y tambien iban como Bearer. Las nuevas
+    // (sb_publishable_...) no lo son, y en ese encabezado se rechazan.
+    if (/^eyJ/.test(sb.anonKey)) encabezados['Authorization'] = 'Bearer ' + sb.anonKey;
+
+    function intento(n) {
+      return fetch(sb.url + '/rest/v1/' + sb.tabla, {
+        method: 'POST', headers: encabezados, body: cuerpo
+      }).then(function (r) {
+        if (r.ok) return { enviado: true, estado: r.status, intentos: n + 1 };
+        if (r.status >= 500 && n < ESPERAS_REINTENTO.length) return esperar(n);
+        return { enviado: false, estado: r.status, intentos: n + 1 };
+      }).catch(function (e) {
+        if (n < ESPERAS_REINTENTO.length) return esperar(n);
+        anotarIncidencia('fallo el envio remoto', String(e));
+        return { enviado: false, motivo: String(e), intentos: n + 1 };
+      });
+    }
+    function esperar(n) {
+      return new Promise(function (listo) {
+        setTimeout(function () { listo(intento(n + 1)); }, ESPERAS_REINTENTO[n]);
+      });
+    }
+    return intento(0);
   }
 
   return {

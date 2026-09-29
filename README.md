@@ -169,6 +169,8 @@ del estudio original.
     js/app.js           flujo de pantallas, tutorial, informe final
     fotos/              e01..e24 del test y p1..p3 de práctica
                         700 x 850, escala de grises, un solo actor
+    supabase/esquema.sql  tabla y reglas de seguridad de la base de datos
+    .github/workflows/    latido diario que evita la pausa de la base
 
 Todo es JavaScript clásico, sin módulos ni `fetch` de archivos locales, porque
 los módulos no funcionan bajo el protocolo `file://` y la aplicación tiene que
@@ -188,6 +190,40 @@ Cada registro guarda los parámetros con que se aplicó (fondo, milisegundos de
 exposición y de máscara, orden y disposición de los botones, tamaño de la
 imagen), de modo que cualquier comparación futura sea analizable.
 
+## Base de datos (Supabase)
+
+Al terminar, la app envía el registro completo a una tabla de Supabase. Si no
+hay base configurada, o si falla el envío, el registro queda en el navegador
+de la persona, como antes.
+
+- **Qué puede hacer la clave de la app.** La clave publicable
+  (`sb_publishable_...`) es pública por diseño: está en el código de la
+  página. Por eso `supabase/esquema.sql` le permite solo insertar una
+  aplicación completa (24 ensayos, consentimiento aceptado, id y cohorte
+  coherentes). No puede leer, cambiar ni borrar nada. Los datos se descargan
+  desde el panel de Supabase con la cuenta de los investigadores. La clave
+  secreta no se comparte nunca.
+- **La compuerta ética.** Mientras `recoleccionAbierta` sea `false` en
+  `config.js`, la app solo envía las aplicaciones de prueba del equipo, las
+  que se abren con `?c=prueba`, y el análisis las excluye. Se pone en `true`
+  el día que el comité de ética apruebe.
+- **Reintentos.** Si el servidor falla (5xx) o se cae la red, la app reintenta
+  a los 1,5 y a los 4 segundos. Un rechazo (4xx) no se reintenta.
+- **La clave va solo en `apikey`.** Las claves nuevas no son JWT y Supabase las
+  rechaza en `Authorization`; ese encabezado solo se añade si la clave es de
+  las antiguas (`eyJ...`).
+- **El latido.** Los proyectos gratuitos se pausan tras una semana sin
+  actividad. El flujo de `.github/workflows/latido-supabase.yml` consulta cada
+  día el conteo de aplicaciones (función `contar_aplicaciones`, que no expone
+  ningún dato) y mantiene la base activa. GitHub apaga los latidos
+  programados de un repositorio público tras 60 días sin cambios; si llega
+  ese aviso, se reactiva desde la pestaña Actions.
+
+Todo el flujo se probó el 29 de septiembre de 2026 contra una imitación local
+de la API de Supabase: compuerta cerrada y abierta, una aplicación completa
+con un primer envío fallido (el reintento la salvó), los encabezados de las
+claves nueva y antigua, y el registro recibido contra cada regla de la tabla.
+
 ## Pendientes
 
 - **Colores institucionales.** Los verdes de `config.js` se tomaron del tema web
@@ -196,10 +232,9 @@ imagen), de modo que cualquier comparación futura sea analizable.
   la descarga automática del PDF.
 - **Escudo.** El logosímbolo ya está en la portada; falta formalizar la
   autorización de uso de marca ante la Dirección de Comunicaciones.
-- **Backend.** Al crear el proyecto en Supabase, llenar `url` y `anonKey` en
-  `config.js`. Mientras tanto la aplicación funciona igual y guarda en el
-  navegador. La clave `anon public` es pública por diseño y puede ir en el
-  código; la `service_role` no se comparte nunca.
+- **Base de datos.** Crear el proyecto en Supabase (región São Paulo), correr
+  `supabase/esquema.sql` en su SQL Editor y llenar `url` y `anonKey` en
+  `config.js` con la URL del proyecto y la clave publicable.
 - **Consentimiento.** El texto es un borrador y debe revisarlo la asesora antes
   de cualquier aplicación real.
 
