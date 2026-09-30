@@ -224,6 +224,13 @@ de la API de Supabase: compuerta cerrada y abierta, una aplicación completa
 con un primer envío fallido (el reintento la salvó), los encabezados de las
 claves nueva y antigua, y el registro recibido contra cada regla de la tabla.
 
+Ese mismo día se conectó el proyecto real (`tmirfe`, región São Paulo) y se
+probó contra él. Con la clave publicable, una aplicación completa entra; un id
+repetido, una aplicación incompleta, leer, cambiar y borrar se rechazan; y el
+conteo responde. Una aplicación entera hecha en la app con `?c=prueba` llegó a
+la tabla al terminar. Las dos filas de esas pruebas quedan en la cohorte
+`prueba`, que el análisis excluye.
+
 ## Pendientes
 
 - **Colores institucionales.** Los verdes de `config.js` se tomaron del tema web
@@ -232,9 +239,9 @@ claves nueva y antigua, y el registro recibido contra cada regla de la tabla.
   la descarga automática del PDF.
 - **Escudo.** El logosímbolo ya está en la portada; falta formalizar la
   autorización de uso de marca ante la Dirección de Comunicaciones.
-- **Base de datos.** Crear el proyecto en Supabase (región São Paulo), correr
-  `supabase/esquema.sql` en su SQL Editor y llenar `url` y `anonKey` en
-  `config.js` con la URL del proyecto y la clave publicable.
+- **Recolección.** La base ya está conectada y probada. Falta abrir la
+  compuerta (`recoleccionAbierta: true`) el día que el comité de ética
+  apruebe.
 - **Consentimiento.** El texto es un borrador y debe revisarlo la asesora antes
   de cualquier aplicación real.
 

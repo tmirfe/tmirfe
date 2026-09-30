@@ -171,15 +171,16 @@ var CONFIG = {
   },
 
   /* --- Envio de datos ---------------------------------------------------
-     Mientras no haya backend, la aplicacion funciona igual y guarda en el
-     navegador. Al conectar Supabase se llenan url y anonKey.
+     Proyecto de Supabase conectado el 29 de septiembre de 2026 (region Sao
+     Paulo). Sin url o sin anonKey, la aplicacion funciona igual y solo guarda
+     en el navegador.
 
      recoleccionAbierta es la compuerta etica: mientras sea false, la app solo
      envia las aplicaciones de prueba del equipo (enlace con ?c=prueba), que el
      analisis excluye. Se pone en true el dia que el comite de etica apruebe. */
   supabase: {
-    url: '',        // Project URL, https://<proyecto>.supabase.co
-    anonKey: '',    // clave publicable (sb_publishable_...); es publica por diseno
+    url: 'https://olhxnqdxaizfpwgaysnu.supabase.co',
+    anonKey: 'sb_publishable__tK0_7HJhEUrMdhKMdCpYA_C0lKoN4M',  // publica por diseno: solo deja insertar
     tabla: 'aplicaciones',
     recoleccionAbierta: false,
     cohortePrueba: 'prueba'
