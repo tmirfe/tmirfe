@@ -33,7 +33,11 @@ create table if not exists public.aplicaciones (
 
 alter table public.aplicaciones enable row level security;
 
--- El rol de la clave publicable (anon) solo puede insertar.
+-- El rol de la clave publicable (anon) solo puede insertar. Los permisos se dan
+-- a mano, asi que funciona aunque el proyecto no exponga las tablas nuevas por
+-- defecto (la opcion "Automatically expose new tables" apagada, que es lo que
+-- recomienda Supabase).
+grant usage on schema public to anon;
 revoke all on table public.aplicaciones from anon, authenticated;
 grant insert on table public.aplicaciones to anon;
 
@@ -42,7 +46,7 @@ create policy "la app solo inserta" on public.aplicaciones
   for insert to anon with check (true);
 
 -- Conteo por cohorte, sin exponer ningun dato de las aplicaciones. Sirve para
--- vigilar la regla de parada (400 validos o 90 dias) y como latido diario que
+-- vigilar la regla de parada (600 validos o 90 dias) y como latido diario que
 -- impide que el proyecto gratuito se pause por inactividad.
 create or replace function public.contar_aplicaciones()
 returns table (cohorte text, n bigint, primera timestamptz, ultima timestamptz)
